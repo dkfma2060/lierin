@@ -88,11 +88,11 @@ public class WorkerDaoImpl implements WorkerDao {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			int count = sqlSession.getMapper(WorkerMapper.class).getUpdate(worker);
-			sqlSession.commit(); // transaction Ã³¸® =>save point
+			sqlSession.commit(); // transaction Ã³ =>save point
 			return count;
 		} catch (Exception e) {
-			sqlSession.rollback(); // Áö±İ ¸í·ÉÇÑ°ÍÀ» Ãë¼ÒÇÏ°Ú´Ù => update°¡ ¿Ï·áµÇ¾î¾ß commitÀÌ µÇ°Ô ÇÏ°Ú´Ù Áï, update°¡ µÇÁö ¾ÊÀ¸¸é rollback
-									// ½ÃÅ°°Ú´Ù
+			sqlSession.rollback(); // Ñ° Ï°Ú´ => update Ï· Ç¾ commit Ç° Ï°Ú´ , update
+									// rollback Å° Ú´
 		} finally {
 			sqlSession.close();
 		}
@@ -143,13 +143,13 @@ public class WorkerDaoImpl implements WorkerDao {
 		System.out.println("!!!" + notice.getDetail());
 		try {
 			int count = sqlSession.getMapper(WorkerMapper.class).getBoardUpdate(notice);
-			sqlSession.commit(); // transaction Ã³¸® =>save point
+			sqlSession.commit(); // transaction ì²˜ë¦¬ =>save point
 			System.out.println("ddddd" + count);
 			return count;
 		} catch (Exception e) {
 			e.printStackTrace();
-			sqlSession.rollback(); // Áö±İ ¸í·ÉÇÑ°ÍÀ» Ãë¼ÒÇÏ°Ú´Ù => update°¡ ¿Ï·áµÇ¾î¾ß commitÀÌ µÇ°Ô ÇÏ°Ú´Ù Áï, update°¡ µÇÁö ¾ÊÀ¸¸é rollback
-									// ½ÃÅ°°Ú´Ù
+			sqlSession.rollback(); // ì§€ê¸ˆ ëª…ë ¹í•œê²ƒì„ ì·¨ì†Œí•˜ê² ë‹¤ => updateê°€ ì™„ë£Œë˜ì–´ì•¼ commitì´ ë˜ê²Œ í•˜ê² ë‹¤ ì¦‰, updateê°€ ë˜ì§€ ì•Šìœ¼ë©´ rollback
+									// ì‹œí‚¤ê² ë‹¤
 		} finally {
 			sqlSession.close();
 		}
@@ -177,7 +177,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // »ç¿ëÀÚ ¸ÅÃâ °ü¸® ¸®½ºÆ®
+	@Override // ì‚¬ìš©ì ë§¤ì¶œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	public List<Sales> selectSales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -187,7 +187,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // »ç¿ëÀÚ º° ÃÑ ¸ÅÃâ
+	@Override // ì‚¬ìš©ì ë³„ ì´ ë§¤ì¶œ
 	public List<Integer> sales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -197,7 +197,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // »ç¿ëÀÚ ³¯Â¥º° ÃÑ ¸ÅÃâ
+	@Override // ë‚ ì§œë³„ ì´ ë§¤ì¶œ
 	public List<Integer> dateSales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -217,7 +217,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // best n->y »óÅÂ º¯°æ
+	@Override // best n->y ìƒíƒœ ë³€ê²½
 	public int best(int pseq) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -239,7 +239,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // best y->n »óÅÂ º¯°æ
+	@Override // best y->n ìƒíƒœ ë³€ê²½
 	public int deleteBest(int pseq) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -261,7 +261,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // recommend n->y »óÅÂ º¯°æ
+	@Override // recommend n->y ìƒíƒœ ë³€ê²½
 	public int recommend(int pseq) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -283,7 +283,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // recommend y->n »óÅÂ º¯°æ
+	@Override // recommend y->n ìƒíƒœ ë³€ê²½
 	public int deleteRecommend(int pseq) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -295,7 +295,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // 1¹ø seller ¼ö¼ö·á
+	@Override // 1ë²ˆ seller ìˆ˜ìˆ˜ë£Œ
 	public List<dto.SellerSales> Seller1Sales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -305,7 +305,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // 2¹ø seller ¼ö¼ö·á
+	@Override // 2ë²ˆ seller ìˆ˜ìˆ˜ë£Œ
 	public List<SellerSales> Seller2Sales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -315,7 +315,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // 3¹ø seller ¼ö¼ö·á
+	@Override // 3ë²ˆ seller ìˆ˜ìˆ˜ë£Œ
 	public List<SellerSales> Seller3Sales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -325,7 +325,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // 4¹ø seller ¼ö¼ö·á
+	@Override // 4ë²ˆ seller ìˆ˜ìˆ˜ë£Œ
 	public List<SellerSales> Seller4Sales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -335,7 +335,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // 5¹ø seller ¼ö¼ö·á
+	@Override // 5ë²ˆ seller ìˆ˜ìˆ˜ë£Œ
 	public List<SellerSales> Seller5Sales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -345,7 +345,7 @@ public class WorkerDaoImpl implements WorkerDao {
 		}
 	}
 
-	@Override // 6¹ø seller ¼ö¼ö·á
+	@Override // 6ë²ˆ seller ìˆ˜ìˆ˜ë£Œ
 	public List<SellerSales> Seller6Sales() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
@@ -354,5 +354,29 @@ public class WorkerDaoImpl implements WorkerDao {
 			sqlSession.close();
 		}
 	}
+	
+	@Override
+	public int discount(int pseq) throws Exception {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			int count = sqlSession.getMapper(WorkerMapper.class).getDiscount(pseq);
+			sqlSession.commit();
+			return count;
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public int notDiscount(int pseq) throws Exception {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			int count = sqlSession.getMapper(WorkerMapper.class).getNotDiscount(pseq);
+			sqlSession.commit();
+			return count;
+		} finally {
+			sqlSession.close();
+		}
+	}	
 
 }

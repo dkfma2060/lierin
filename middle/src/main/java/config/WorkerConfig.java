@@ -19,6 +19,7 @@ import controller.WAddController;
 import controller.WBoardController;
 import controller.WBoardUpdateController;
 import controller.WDeleteController;
+import controller.WDiscountController;
 import controller.WLeaveController;
 import controller.WListController;
 import controller.WLoginController;
@@ -45,7 +46,6 @@ public class WorkerConfig implements WebMvcConfigurer {
 			String resource = "dao/mybatis-config.xml";
 			InputStream inputStream = Resources.getResourceAsStream(resource);
 			sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			orderDaoImpl = orderDaoImpl();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -111,21 +111,17 @@ public class WorkerConfig implements WebMvcConfigurer {
 	}
 
 //회원정보관리---------------------------------------------------------------------------------	
-	
-	@Autowired
+
 	private CustomerDaoImpl customerDao;
 
-	@Bean
 	public CustomerDaoImpl customerDao() {
 		CustomerDaoImpl customer = new CustomerDaoImpl();
 		customer.setDataSource(sqlSessionFactory);
 		return customer;
 	}
-	
-	@Autowired
+
 	private SellerDaoImpl sellerDao;
 
-	@Bean
 	public SellerDaoImpl sellerDao() {
 		SellerDaoImpl seller = new SellerDaoImpl();
 		seller.setDataSource(sqlSessionFactory);
@@ -136,8 +132,8 @@ public class WorkerConfig implements WebMvcConfigurer {
 	@Bean
 	public WManagementController wManagementController() {
 		WManagementController wManagementController = new WManagementController();
-		//sellerDao = sellerDao();
-		//customerDao = customerDao();		
+		sellerDao = sellerDao();
+		customerDao = customerDao();
 		wManagementController.setDao(customerDao, sellerDao);
 		return wManagementController;
 	}
@@ -146,8 +142,8 @@ public class WorkerConfig implements WebMvcConfigurer {
 	@Bean
 	public WDeleteController wDeleteController() {
 		WDeleteController wDeleteController = new WDeleteController();
-		//sellerDao = sellerDao();
-		//customerDao = customerDao();	
+		sellerDao = sellerDao();
+		customerDao = customerDao();
 		wDeleteController.setDao(customerDao, sellerDao);
 		return wDeleteController;
 	}
@@ -156,8 +152,8 @@ public class WorkerConfig implements WebMvcConfigurer {
 	@Bean
 	public WLeaveController wLeaveController() {
 		WLeaveController wLeaveController = new WLeaveController();
-		//sellerDao = sellerDao();
-		//customerDao = customerDao();	
+		sellerDao = sellerDao();
+		customerDao = customerDao();
 		wLeaveController.setDao(customerDao, sellerDao);
 		return wLeaveController;
 	}
@@ -166,22 +162,18 @@ public class WorkerConfig implements WebMvcConfigurer {
 	@Bean
 	public WPromoteController wPromoteController() {
 		WPromoteController wPromoteController = new WPromoteController();
-		//sellerDao = sellerDao();
-		//customerDao = customerDao();	
+		sellerDao = sellerDao();
+		customerDao = customerDao();
 		wPromoteController.setDao(customerDao);
 		return wPromoteController;
 	}
-	
-	
+
 //상품관리-----------------------------------------------------------------------------	
 
-	@Autowired
 	private ProductDaoImpl productDao;
 
-	@Bean
 	public ProductDaoImpl productDao() {
 		ProductDaoImpl productDao = new ProductDaoImpl();
-		//productDao = productDao();
 		productDao.setDataSource(sqlSessionFactory);
 		return productDao;
 	}
@@ -189,7 +181,8 @@ public class WorkerConfig implements WebMvcConfigurer {
 	@Bean // 카테고리별 상품 리스트
 	public PKindController pKindController() {
 		PKindController pKindController = new PKindController();
-		pKindController.setProductDao(productDao,workerDao);
+		productDao = productDao();
+		pKindController.setProductDao(productDao, workerDao);
 		return pKindController;
 	}
 
@@ -200,7 +193,14 @@ public class WorkerConfig implements WebMvcConfigurer {
 		return pRegController;
 	}
 
-//주문내역관리---------------------------------------------------------------------------
+	@Bean // 세일 등록/취소
+	public WDiscountController wDiscountController() {
+		WDiscountController wDiscountController = new WDiscountController();
+		wDiscountController.setProductDao(productDao, workerDao);
+		return wDiscountController;
+	}
+
+// 주문내역관리---------------------------------------------------------------------------
 
 	private OrderDaoImpl orderDaoImpl;
 
@@ -210,22 +210,22 @@ public class WorkerConfig implements WebMvcConfigurer {
 		return orderDaoImpl;
 	}
 
-	@Bean //셀러별 주문 리스트
+	@Bean // 셀러별 주문 리스트
 	public WOrderController wOrderController() {
 		WOrderController wOrderController = new WOrderController();
-		wOrderController.setOrderDaoImpl(orderDaoImpl,sellerDao);
+		wOrderController.setOrderDaoImpl(orderDaoImpl(), sellerDao);
 		return wOrderController;
 
 	}
-	
+
 	@Bean
 	public WOrderDetailController wOrderDetailController() {
 		WOrderDetailController wOrderDetailController = new WOrderDetailController();
-		wOrderDetailController.setOrderDaoImpl(orderDaoImpl);
+		wOrderDetailController.setOrderDaoImpl(orderDaoImpl());
 		return wOrderDetailController;
 	}
 
-//게시판관리---------------------------------------------------------------------------	
+// 게시판관리---------------------------------------------------------------------------
 
 	@Bean // 게시물 등록 type =0 일때 공지사항 type=1 이면 QnA
 	public WBoardController wBoardController() {
@@ -255,7 +255,7 @@ public class WorkerConfig implements WebMvcConfigurer {
 		return wBoardUpdateController;
 	}
 
-//매출관리---------------------------------------------------------------------------	
+// 매출관리---------------------------------------------------------------------------
 
 	@Bean
 	public WSalesController wSalesController() {
@@ -263,5 +263,4 @@ public class WorkerConfig implements WebMvcConfigurer {
 		wSalesController.setDao(workerDao);
 		return wSalesController;
 	}
-
 }

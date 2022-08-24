@@ -24,7 +24,7 @@ public class WPromoteController {
 	//@GetMapping("worker/promote")
 	public String form(@RequestParam(value="email")String email, Model model) {
 		try {
-			model.addAttribute("customer",customerDao.selectOne(email));
+			model.addAttribute("customer",customerDao.SelectCByEmail(email));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

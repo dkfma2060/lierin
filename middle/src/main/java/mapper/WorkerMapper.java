@@ -35,102 +35,125 @@ public interface WorkerMapper {
 	@Update("update worker set pw=#{pw}, phone=#{phone} where id=#{id}")
 	public int getUpdate(Worker worker) throws Exception;
 
-	// °Ô½ÃÆÇ µî·Ï
+	// ê²Œì‹œíŒ ë“±ë¡
 	@Insert("insert into wnotice(name,type,title,detail) value(#{name},#{type},#{title},#{detail})")
 	public int getNoticeAdd(Wnotice notice) throws Exception;
 
-	// °Ô½ÃÆÇ °øÁö»çÇ× list
-	@Select("select * from wnotice where type=0")
+	// ê²Œì‹œíŒ ê³µì§€ì‚¬í•­ list
+	@Select("select * from wnotice where type != 1")
 	public List<Wnotice> getNoticeAll() throws Exception;
 
-	// °Ô½ÃÆÇ QnA list
+	// ê²Œì‹œíŒ QnA list
 	@Select("select * from wnotice where type=1")
 	public List<Wnotice> getQnaAll() throws Exception;
 
-	// °Ô½Ã¹° delete
+	// ê²Œì‹œë¬¼ delete
 	@Delete("delete from wnotice where wseq=#{wseq}")
 	public void getBoardDelete(@Param("wseq") int wseq) throws Exception;
 
-	// °Ô½Ã¹° update
+	// ê²Œì‹œë¬¼ update
 	@Update("update wnotice set title=#{title}, detail=#{detail} where wseq=#{wseq}")
 	public int getBoardUpdate(Wnotice notice) throws Exception;
 
-	// °Ô½Ã¹° select
+	// ê²Œì‹œë¬¼ select
 	@Select("select * from wnotice where wseq=#{wseq}")
 	public Wnotice getBoardAll(@Param("wseq") int wseq) throws Exception;
 
-	// »ç¿ëÀÚ ¸ÅÃâ °ü¸® ¸®½ºÆ®
+	// ì‚¬ìš©ì ë§¤ì¶œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	@Select("select order_view.name,order_view.email,order_view.payment, customer.grade,customer.reg_date from order_view left join customer on order_view.email = customer.email group by name")
 	public List<Sales> getCustomerSale() throws Exception;
 
-	// »ç¿ëÀÚº° ÃÑ ¸ÅÃâ
+	// ì‚¬ìš©ìë³„ ì´ë§¤ì¶œ
 	@Select("select sum(payment) from order_view group by name")
 	public List<Integer> getSales() throws Exception;
 
-	// »ç¿ëÀÚ ³¯Â¥º° ÃÑ ¸ÅÃâ
+	// ì‚¬ìš©ì ë‚ ì§œë³„ ì´ ë§¤ì¶œ
 	@Select("SELECT DATE_FORMAT(reg_date, '%Y%m%d') AS date, sum(payment) AS cnt FROM order_view GROUP BY DATE_FORMAT(reg_date, '%Y%m%d') ORDER BY date DESC")
 	public List<Integer> getDateSales() throws Exception;
 
-	// ÁÖ¹®·®ÀÌ ¸¹Àº »óÇ° ranking top 8 ¹Ş¾Æ¿À±â
+	// ê³µì§€ì‚¬í•­ ê°€ì§€ê³  ì˜¤ê¸°
+	@Select("select * from wnotice where type=0")
+	public List<Wnotice> selctNotice() throws Exception;
+
+	// ìì£¼í•˜ëŠ” ì§ˆë¬¸ ê°€ì§€ê³  ì˜¤ê¸°
+	@Select("select * from wnotice where type=1")
+	public List<Wnotice> selectQuestions() throws Exception;
+
+	// ê³µì§€ì‚¬í•­, ìì£¼í•˜ëŠ” ì§ˆë¬¸ í•œê°œë§Œ ê°€ì§€ê³  ì˜¤ê¸°
+	@Select("select * from wnotice where wseq=#{wseq}")
+	public Wnotice selectNoticeDetail(@Param("wseq") int wseq) throws Exception;
+
+	// ê³µì§€ì‚¬í•­ hits plus 1 ì‹œí‚¤ê¸°
+	@Update("update wnotice set hits=hits+1 where wseq=#{wseq}")
+	public void hitsPlusOne(@Param("wseq") int wseq) throws Exception;
+
+	// ì£¼ë¬¸ëŸ‰ì´ ë§ì€ ìƒí’ˆ ranking top 8 ë°›ì•„ì˜¤ê¸°
 	// @Select("select * from (select pseq,pname,payment,sum(quantity),dense_rank()
 	// over (order by sum(quantity) desc)as ranking from order_view GROUP BY pseq)
 	// ranked where ranked.ranking<8")
 	@Select("select pseq, count(pseq) from order_view group by pseq order by count(pseq) desc limit 8")
 	public List<Integer> getRank() throws Exception;
 
-	// ranking top »óÇ° best »óÅÂ y·Î º¯°æ
+	// ranking top ìƒí’ˆ best ìƒíƒœ yë¡œ ë³€ê²½
 	@Update("update product set best='y'where pseq=#{pseq}")
 	public int getBest(@Param("pseq") int pseq) throws Exception;
 
-	// best_p_view List ¹Ş¾Æ¿À±â
+	// best_p_view List ë°›ì•„ì˜¤ê¸°
 	@Select("select * from best_p_view")
 	public List<Integer> getBestList() throws Exception;
 
-	// ranking top »óÇ°ÀÌ ¾Æ´Ñ°ÍÀº best »óÅÂ nÀ¸·Î º¯°æ
+	// ranking top ìƒí’ˆì´ ì•„ë‹Œê²ƒì€ best ìƒíƒœ nìœ¼ë¡œ ë³€ê²½
 	@Update("update product set best='n'where pseq=#{pseq}")
 	public int getDeleteBest(@Param("pseq") int pseq) throws Exception;
 
-	// ÁÁ¾Æ¿ä°¡ ¸¹Àº »óÇ° ranking top 6 list ¹Ş¾Æ¿À±â
+	// ì¢‹ì•„ìš”ê°€ ë§ì€ ìƒí’ˆ ranking top 6 list ë°›ì•„ì˜¤ê¸°
 	// @Select("select * from (select pseq,count(*),dense_rank() over (order by
 	// count(*) desc)as ranking from like_view GROUP BY pseq) ranked where
 	// ranked.ranking<6")
 	@Select("select pseq, count(pseq) from like_view group by pseq order by count(pseq) desc limit 6;")
 	public List<Integer> getLikeRank() throws Exception;
 
-	// ranking top »óÇ° recommend »óÅÂ y·Î º¯°æ
+	// ranking top ìƒí’ˆ recommend ìƒíƒœ yë¡œ ë³€ê²½
 	@Update("update product set recommend='y'where pseq=#{pseq}")
 	public int getRecommend(@Param("pseq") int pseq) throws Exception;
 
-	// recommend_p_view List ¹Ş¾Æ¿À±â
+	// recommend_p_view List ë°›ì•„ì˜¤ê¸°
 	@Select("select * from recommend_p_view")
 	public List<Integer> getRecommendList() throws Exception;
 
-	// ranking top »óÇ°ÀÌ ¾Æ´Ñ°ÍÀº recommend »óÅÂ nÀ¸·Î º¯°æ
+	// ranking top ìƒí’ˆì´ ì•„ë‹Œê²ƒì€ recommend ìƒíƒœ nìœ¼ë¡œ ë³€ê²½
 	@Update("update product set recommend='n'where pseq=#{pseq}")
 	public int getDeleteRecommend(@Param("pseq") int pseq) throws Exception;
 
-	// 1¹ø ¼¿·¯ ¼ö¼ö·á °ü¸® ¸®½ºÆ®
+	// sale y->n ì„¤ì •
+	@Update("update product set sale='n' where pseq=#{pseq}")
+	public int getDiscount(@Param("pseq") int pseq) throws Exception;
+
+	// sale n->y ì„¤ì •
+	@Update("update product set sale='y' where pseq=#{pseq}")
+	public int getNotDiscount(@Param("pseq") int pseq) throws Exception;
+
+	// 1ë²ˆ ì…€ëŸ¬ ìˆ˜ìˆ˜ë£Œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	@Select("select * from seller1")
 	public List<SellerSales> getSeller1Sale() throws Exception;
 
-	// 2¹ø ¼¿·¯ ¼ö¼ö·á °ü¸® ¸®½ºÆ®
+	// 2ë²ˆ ì…€ëŸ¬ ìˆ˜ìˆ˜ë£Œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	@Select("select * from seller2")
 	public List<SellerSales> getSeller2Sale() throws Exception;
 
-	// 3¹ø ¼¿·¯ ¼ö¼ö·á °ü¸® ¸®½ºÆ®
+	// 3ë²ˆ ì…€ëŸ¬ ìˆ˜ìˆ˜ë£Œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	@Select("select * from seller3")
 	public List<SellerSales> getSeller3Sale() throws Exception;
 
-	// 4¹ø ¼¿·¯ ¼ö¼ö·á °ü¸® ¸®½ºÆ®
+	// 4ë²ˆ ì…€ëŸ¬ ìˆ˜ìˆ˜ë£Œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	@Select("select * from seller4")
 	public List<SellerSales> getSeller4Sale() throws Exception;
 
-	// 5¹ø ¼¿·¯ ¼ö¼ö·á °ü¸® ¸®½ºÆ®
+	// 5ë²ˆ ì…€ëŸ¬ ìˆ˜ìˆ˜ë£Œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	@Select("select * from seller5")
 	public List<SellerSales> getSeller5Sale() throws Exception;
 
-	// 6¹ø ¼¿·¯ ¼ö¼ö·á °ü¸® ¸®½ºÆ®
+	// 6ë²ˆ ì…€ëŸ¬ ìˆ˜ìˆ˜ë£Œ ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸
 	@Select("select * from seller6")
 	public List<SellerSales> getSeller6Sale() throws Exception;
-
 }

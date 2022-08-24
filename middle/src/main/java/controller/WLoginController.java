@@ -43,7 +43,7 @@ public class WLoginController {
 			
 			Worker authInfo = workerDao.exist(loginCommand.getId(), loginCommand.getPw());
 			if (authInfo == null) {
-				model.addAttribute("emptyMember", "Á¸ÀçÇÏÁö ¾ÊÀº °ü¸®ÀÚÀÔ´Ï´Ù.");
+				model.addAttribute("emptyMember", "ì¡´ì¬í•˜ì§€ ì•Šì€ ê´€ë¦¬ìì…ë‹ˆë‹¤.");
 				return "worker/WorkerLogin";
 			}
 

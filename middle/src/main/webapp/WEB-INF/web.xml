@@ -16,7 +16,13 @@
          <param-name>contextConfigLocation</param-name>
          <param-value>
             config.MvcConfig
-            config.WorkerConfig  
+            config.WorkerConfig 
+            config.CustomerConfig
+            config.ProductConfig
+            config.CartConfig
+            config.SellerConfig
+            config.OrderConfig
+            config.MypageConfig
          </param-value>
       </init-param>
       <init-param>

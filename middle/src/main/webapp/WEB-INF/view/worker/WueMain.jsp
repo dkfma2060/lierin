@@ -115,7 +115,7 @@ h1 {
 }
 
 #home-main-section-top #home-main-top {
-	width: 600px;
+	width: 650px;
 	height: 680px;
 	margin: 0 auto;
 	position: relative;
@@ -127,7 +127,7 @@ h1 {
 }
 
 .home-main-section .home-main-content {
-	width: 600px;
+	width: 650px;
 	margin: 0 auto;
 	display: flex;
 	align-items: center;
@@ -174,12 +174,11 @@ h1 {
 	font-size: 1.2rem !important;
 }
 
-.a img{
+.a img {
 	box-shadow: 0 2px 0 2px rgba(0, 0, 0, 0.12);
-
 }
 
-.b img{
+.b img {
 	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.12);
 }
 
@@ -383,6 +382,13 @@ li {
 	position: fixed;
 }
 </style>
+<script type="text/javascript">
+function chatBtn() {
+
+		window.open('http://192.168.0.59:3000/','popup','width=500,height=600');
+	}
+
+</script>
 <title>What You Eat Main</title>
 </head>
 <body>
@@ -423,7 +429,9 @@ li {
 		<!-- <input class="search" placeholder="문의사항을 입력해주세요" value=""> -->
 		<i class="fas fa-headset fa-3x"
 			style="margin-left: 1500px; margin-top: 55px;"></i>
-		<button class="chat" type="button">문의하기</button>
+		<!-- <a href="http://192.168.0.59:3000/"> -->
+			<button class="chat" type="button" onclick="chatBtn();">문의하기</button>
+		<!-- </a> -->
 		<!-- </div> -->
 	</nav>
 
@@ -438,19 +446,13 @@ li {
 				<img src="/middle/img/simbol.png"
 					style="width: 220px; height: 220px; margin-top: -250px;">
 			</div>
-			<p class="text-m" style="margin-left: -100px; color: #212529; ">
+			<p class="text-m" style="margin-left: -100px; color: #212529;">
 				신선한 식재료를 구매부터, 주말농장 체험까지<br>생산자와 소비자가 소통하는 플랫폼 What You Eat.
 			</p>
 			<div style="margin-left: 820px;">
 				<img src="/middle/img/simbol1.png"
 					style="width: 220px; height: 220px; margin-top: -210px;">
 			</div>
-			<!-- <div class="home-main-image-top">
-				<img
-					srcset="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/image-top-d6869a79bc4cb58ea59aa5a408decfdf4a4ba60ac639837081da12861083cdbb.webp "
-					class="home-main-image-top" alt="중고거래, 동네생활 질문글과 동네가게"
-					src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/image-top-68ba12f0da7b5af9a574ed92ca8b3a9c0068db176b566dd374ee50359693358b.png"> 
-			</div> -->
 		</div>
 	</section>
 
@@ -459,74 +461,57 @@ li {
 		<div id="home-main-top" style="background-color: white;">
 
 			<h1 class="home-main-title"
-				style="padding-top: 115px; margin-left: 680px; color: #212529; background-color: white;">
+				style="padding-top: 115px; margin-left: 720px; color: #212529; background-color: white;">
 				&nbsp;Rational<br>&nbsp;Customer
 			</h1>
 			<div class="a" style="margin-left: -160px;">
 				<img src="/middle/img/CustomerMain.png"
 					style="width: 500px; height: 250px; margin-top: -250px;">
 			</div>
-			<p class="text-m" style="margin-left: 680px; color: #212529;">
-				판매자와 따뜻한 거래를 경험해보세요.</p>
+			<p class="text-m" style="margin-left: 720px; color: #212529;">
+				&nbsp;&nbsp;&nbsp;판매자와 가깝고 따뜻한 거래를 <br>&nbsp;&nbsp; 경험해보세요.
+			</p>
 			<br>
-			<div style="height: 100px; margin-left: 720px;">
-				&nbsp;&nbsp;
-				<button class="customer" type="button">구매 페이지로 이동하기</button>
+			<div style="height: 100px; margin-left: 760px;">
+				&nbsp;&nbsp; <a href="/middle/customer/main">
+					<button class="customer" type="button">구매 페이지로 이동하기</button>
+				</a>
 			</div>
 
 			<div class="b" style="margin-left: -160px;">
 				<img src="/middle/img/CustomerMain3.png"
 					style="width: 500px; height: 250px; margin-top: -200px;">
 			</div>
-
-			<!-- <div class="home-main-image-top">
-				<img
-					srcset="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/image-top-d6869a79bc4cb58ea59aa5a408decfdf4a4ba60ac639837081da12861083cdbb.webp "
-					class="home-main-image-top" alt="중고거래, 동네생활 질문글과 동네가게"
-					src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/image-top-68ba12f0da7b5af9a574ed92ca8b3a9c0068db176b566dd374ee50359693358b.png"> 
-			</div> -->
 		</div>
-
 	</section>
 
 	<!-- seller page info -->
 	<section id="home-main-section-top" style="background-color: #E6F3E6;">
 		<div id="home-main-top" style="background-color: #E6F3E6;">
 
-				<h1 class="home-main-title"
-					style="padding-top: 120px; margin-left: -100px; color: #212529; background-color: #E6F3E6;">
-					Organic Farming<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seller
-				</h1>
-				<p class="text-m" style="margin-left: -100px; color: #212529;">
-					사용자와 가깝고 따뜻한 거래를 지금 경험해보세요.</p>
-				<br>
-				<div style="height: 100px;">
-					<button class="seller" type="button">판매 페이지로 이동하기</button>
-				</div>
-
+			<h1 class="home-main-title"
+				style="padding-top: 120px; margin-left: -100px; color: #212529; background-color: #E6F3E6;">
+				Organic Farming<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seller
+			</h1>
+			<div class="a" style="margin-left: 700px;">
+				<img src="/middle/img/sellerMain.png"
+					style="width: 450px; height: 300px; margin-top: -250px;">
 			</div>
-			<!-- <div class="home-main-image-top">
-				<img
-					srcset="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/image-top-d6869a79bc4cb58ea59aa5a408decfdf4a4ba60ac639837081da12861083cdbb.webp "
-					class="home-main-image-top" alt="중고거래, 동네생활 질문글과 동네가게"
-					src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/image-top-68ba12f0da7b5af9a574ed92ca8b3a9c0068db176b566dd374ee50359693358b.png"> 
-			</div> -->
-
-	</section>
-	<!--  -->
-	<div class="keyVisual" style="background-color: #F8F9FA;"
-		data-section="hero">
-		<div class="keyVisual_inner"
-			style="height: 500px; padding-top: 120px;">
-			<div class="keyVisual_textBox">
-				<h1 class="keyVisual_title"></h1>
+			<p class="text-m" style="margin-left: -100px; color: #212529;">
+				정성스레 키운 농산물을 소비자와 함께 나누어보세요.</p>
+			<br>
+			<div style="height: 100px;">
+				<a href="/middle/seller/instagramAll">
+					<button class="seller" type="button">판매 페이지로 이동하기</button>
+				</a>
+			</div>
+			<div class="b" style="margin-left: 700px;">
+				<img src="/middle/img/sellerMain2.png"
+					style="width: 450px; height: 200px; margin-top: -190px;">
 			</div>
 		</div>
-	</div>
-
-	<div style="width: 100%; height: 50px;"></div>
-
-
+	</section>
+	<div style="height: 200px;"></div>
 	<!-- seller/customer page -->
 
 	<main style="z-index: 1;">
@@ -536,19 +521,20 @@ li {
 					<span>Page Type</span>
 				</h2>
 				<ul>
-					<li><a href="">
-							<div class="hidden_box">
-								<p></p>
-								<span>Seller Page</span>
-							</div> <img src="/webapp/img/seller3.png" width="500" height="500"
-							alt=""> &nbsp;
-					</a></li>
-					<li style="margin: 0;"><a href="">
+					<li><a href="/middle/customer/main">
 							<div class="hidden_box">
 								<p></p>
 								<span>Customer Page</span>
-							</div> <img src="/webapp/img/customer2.png" width="500" height="500"
+							</div> <img src="/middle/img/customer2.png" width="500" height="500"
 							alt="" title=""> &nbsp;
+					</a></li>
+					<li style="margin: 0;"><a href="/middle/seller/instagramAll">
+							<div class="hidden_box">
+								<p></p>
+								<span>Seller Page</span>
+							</div> <img src="/middle/img/seller3.png" width="500" height="500" alt="">
+							&nbsp;
+
 					</a></li>
 				</ul>
 			</div>

@@ -20,11 +20,13 @@
     </environment>
   </environments>
   <mappers>
-   <mapper class="mapper.WorkerMapper"/>
-   <mapper class="mapper.CustomerMapper"/>
-   <mapper class="mapper.SellerMapper"/>
-   <mapper class="mapper.ProductMapper"/>
-   <mapper class="mapper.OrderMapper"/>
+    <mapper class="mapper.CustomerMapper"/> 
+    <mapper class="mapper.ProductMapper"/> 
+    <mapper class="mapper.WorkerMapper"/>
+    <mapper class="mapper.OrderMapper"/>
+    <mapper class="mapper.CartMapper"/>
+    <mapper class="mapper.SellerMapper"/>
+    <mapper class="mapper.LikeMapper"/> 
    	<!-- <mapper resource = "dao/MemberMapper.xml"/> -->
   </mappers>
 </configuration>

@@ -24,7 +24,7 @@ public class PKindController {
 		this.workerDao = workerDao;
 		return this;
 	}
-
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public String form(@PathVariable("kind") int kind, Model model) {
 		try {
@@ -35,61 +35,27 @@ public class PKindController {
 				imagebyProduct.add(images.get(0));
 			}
 
-			//best_p_view list y->nÀ¸·Î º¯°æ
+			//best_p_view list y->nìœ¼ë¡œ ë³€ê²½
 			List<Integer> bestlist = workerDao.bestList();
 			for (int i = 0; i < bestlist.size(); i++) {
 				workerDao.deleteBest(bestlist.get(i));
 			}
-			//best ranking list n->yÀ¸·Î º¯°æ
+			//best ranking list n->yìœ¼ë¡œ ë³€ê²½
 			List<Integer> ranking = workerDao.rank();
 			for (int i = 0; i < ranking.size(); i++) {
 				workerDao.best(ranking.get(i));				
 			}
-			//recommend_p_view list y->nÀ¸·Î º¯°æ
+			//recommend_p_view list y->nìœ¼ë¡œ ë³€ê²½
 			List<Integer> recommendList = workerDao.recommendList();
 			for (int i = 0; i < recommendList.size(); i++) {
 				workerDao.deleteRecommend(recommendList.get(i));
 			}
-			//recommend ranking list n->yÀ¸·Î º¯°æ
+			//recommend ranking list n->yìœ¼ë¡œ ë³€ê²½
 			List<Integer> likeRank = workerDao.likeRank();
 			for (int i = 0; i < likeRank.size(); i++) {
 				workerDao.recommend(likeRank.get(i));				
 			}
 			
-			
-/*			
-			// best_p_view ¿¡¼­ ranking¿¡ ¾ø´Â »óÇ°Àº best y->n À¸·Î º¯°æ ÇÏ´Â ºÎºÐ
-			List<Integer> ranking = workerDao.rank();
-			List<Integer> bestlist = workerDao.bestList();
-			// System.out.println(bestlist);
-			for (int i = 0; i < ranking.size(); i++) {
-				for (int j = 0; j < bestlist.size(); j++) {
-					if (ranking.get(i) != bestlist.get(j)) {
-						workerDao.deleteBest(bestlist.get(j));
-					}
-				}
-			}
-			// ranking top => best_product update(y·Î º¯°æÇÏ´Â ºÎºÐ)
-			for (int i = 0; i < ranking.size(); i++) {
-				workerDao.best(ranking.get(i));
-			}
-
-			// recommend_p_view ¿¡¼­ ranking¿¡ ¾ø´Â »óÇ°Àº best y->n À¸·Î º¯°æ ÇÏ´Â ºÎºÐ
-			List<Integer> likeRank = workerDao.likeRank();
-			List<Integer> recommendList = workerDao.recommendList();
-			for (int i = 0; i < likeRank.size(); i++) {
-				for (int j = 0; j < recommendList.size(); j++) {
-					if (ranking.get(i) != recommendList.get(j)) {
-						workerDao.deleteRecommend(recommendList.get(j));
-					}
-				}
-			}
-
-			// ranking top => recommend_product update(y·Î º¯°æÇÏ´Â ºÎºÐ)
-			for (int i = 0; i < likeRank.size(); i++) {
-				workerDao.recommend(likeRank.get(i));
-			}
-*/			
 			model.addAttribute("products", products);
 			model.addAttribute("imagebyProduct", imagebyProduct);
 			return "worker/ProductKind";
@@ -99,5 +65,5 @@ public class PKindController {
 			return "worker/ProductManagement";
 		}
 	}
-
+	
 }

@@ -1,107 +1,325 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import dto.Cart;
+import dto.Customer;
+import dto.Like;
 import dto.Order;
-import dto.Seller;
+import dto.Product;
+import mapper.LikeMapper;
 import mapper.OrderMapper;
+import mapper.ProductMapper;
 
-public class OrderDaoImpl{
+public class OrderDaoImpl {
 	private SqlSessionFactory sqlSessionFactory;
-
+	
 	public void setDataSource(SqlSessionFactory sqlSessionFactory) {
 		this.sqlSessionFactory = sqlSessionFactory;
 	}
 	
-	// seller¿¡¼­ customer°¡ ÁÖ¹®ÇÑ »óÇ°À» °¡Á®¿À´Â ¸Ş¼Òµå(ÁÖ¹®¹øÈ£ group by Àû¿ë x=µğÅ×ÀÏ)
-	public List<Order> SOrderList(int sseq, int oseq) throws Exception {
+	//ì‚¬ìš©ì point ê°€ì§€ê³  ì˜¤ëŠ” ë©”ì†Œë“œ
+	public int selectPoint(String email) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
-			return sqlSession.getMapper(OrderMapper.class).SOrderList(sseq, oseq);
-		} finally {
+			return sqlSession.getMapper(OrderMapper.class).selectPoint(email);
+			
+		}finally {
 			sqlSession.close();
 		}
 	}
-
-	// ÁÖ¹®³»¿ª¿¡ °üÇÑ ÃÑÇÕ°è
-	public int SOrderListCount(@Param("sseq") int sseq, @Param("oseq") int oseq) throws Exception {
+	//ì‚¬ìš©ì ë°ì´í„° ê°€ì§€ê³  ì˜¤ëŠ” ë©”ì†Œë“œ
+	public Customer selectCustomer(String email) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
-			return sqlSession.getMapper(OrderMapper.class).SOrderListCount(sseq, oseq);
-		} finally {
+			return sqlSession.getMapper(OrderMapper.class).selectCustomer(email);
+			
+		}finally {
 			sqlSession.close();
 		}
-
 	}
-
-	// ÁÖ¹® ¹øÈ£º° ÃÑ ÇÕ»ê ±İ¾×À» °¡Á®¿À´Â ¸Ş¼Òµå
-	public List<Integer> STotalPrice(int sseq) throws Exception {
+	
+	
+	//ì£¼ë¬¸í• ë•Œ ì‚¬ìš©í•˜ëŠ” ë©”ì†Œë“œ
+	public void insertOrder(String email, List<Order> orderList, int revisePoint, int amount, int usedPoint) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
-			return sqlSession.getMapper(OrderMapper.class).STotalPrice(sseq);
-		} finally {
-			sqlSession.close();
-		}
-
-	}
-
-	// ÁÖ¹® ¹øÈ£º° »óÇ° ³»¿ªÀ» °¡Á®¿À´Â ¸Ş¼Òµå (ÁÖ¹®¹øÈ£ group by)
-	public List<Order> SOseqOrderList(int sseq) throws Exception {
-		SqlSession sqlSession = sqlSessionFactory.openSession();
-		try {
-			return sqlSession.getMapper(OrderMapper.class).SOseqOrderList(sseq);
-		} finally {
-			sqlSession.close();
-		}
-
-	}
-
-	// ÁÖ¹® ¹øÈ£º° ÃÑ °¹¼ö¸¦ °¡Á®¿À´Â ¸Ş¼Òµå (ÁÖ¹®¹øÈ£ group by)
-	public List<Integer> SOseqCountList(int sseq) throws Exception {
-		SqlSession sqlSession = sqlSessionFactory.openSession();
-		try {
-			return sqlSession.getMapper(OrderMapper.class).SOseqCountList(sseq);
-		} finally {
+			sqlSession.getMapper(OrderMapper.class).insertOrder(email, amount, usedPoint);
+			sqlSession.getMapper(OrderMapper.class).updateCustomerPoint(email, revisePoint);
+			int maxOseq = sqlSession.getMapper(OrderMapper.class).selectMaxOseq();
+		
+			for(Order order: orderList) {
+				sqlSession.getMapper(OrderMapper.class).insertOrderDetail(maxOseq, order.getPseq(), order.getQuantity(), order.getPayment());
+				//sqlSession.getMapper(OrderMapper.class).updateCartResult(email, order.getPseq(), order.getQuantity());
+				sqlSession.getMapper(OrderMapper.class).updateCartResult(email, order.getPseq(), order.getQuantity());	
+				sqlSession.getMapper(OrderMapper.class).deleteCart(email, order.getPseq(), order.getQuantity());
+				sqlSession.getMapper(OrderMapper.class).updateQuantity(order.getPseq(), order.getQuantity());
+			}
+			sqlSession.commit();
+		}finally {
 			sqlSession.close();
 		}
 
 	}
-
-	// ÁÖ¹® ¹øÈ£º° ÃÑ ÇÕ»ê ±İ¾×À» °¡Á®¿À´Â ¸Ş¼Òµå (ÁÖ¹®»óÅÂ Àû¿ë)
-	public List<Integer> STotalPrice2(int sseq, int result) throws Exception {
+	
+	//ìƒí’ˆ ì½”ë“œë¡œ ìƒí’ˆ ì •ë³´ ê°€ì§€ê³  ì˜¤ê³  ì²«ë²ˆì§¸ ì´ë¯¸ì§€ë„ ê°™ì´ ê°€ì§€ê³  ì˜¤ëŠ” ë©”ì†Œë“œ
+	public Product selectOne(int pseq) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
-			return sqlSession.getMapper(OrderMapper.class).STotalPrice2(sseq, result);
-		} finally {
+			List<String> images =  sqlSession.getMapper(ProductMapper.class).getImages(pseq);
+			Product product = sqlSession.getMapper(ProductMapper.class).getProduct(pseq);
+			product.setUrl(images.get(0));
+			return product;			
+		}finally{
 			sqlSession.close();
 		}
-
 	}
-
-	// ÁÖ¹® ¹øÈ£º° »óÇ° ³»¿ªÀ» °¡Á®¿À´Â ¸Ş¼Òµå (ÁÖ¹®¹øÈ£ group by) (ÁÖ¹®»óÅÂ Àû¿ë)
-	public List<Order> SOseqOrderList2(int sseq, int result) throws Exception {
+	
+	//ì¥ë°”êµ¬ë‹ˆ ì½”ë“œë¡œ ì¥ë°”êµ¬ë‹ˆ ì •ë³´ ê°€ì§€ê³  ì˜¤ê³  ì²«ë²ˆì§¸ ì´ë¯¸ì§€ë„ ê°™ì´ ê°€ì§€ê³  ì˜¤ëŠ” ì½”ë“œ
+	public List<Cart> selectCartList(List<Integer> cseqList) throws Exception{
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
-			return sqlSession.getMapper(OrderMapper.class).SOseqOrderList2(sseq, result);
-		} finally {
+			List<Cart> carts = new ArrayList<Cart>();
+			for(int cseq:cseqList) {
+				Cart cart = sqlSession.getMapper(OrderMapper.class).selectCart(cseq);
+				List<String> images =  sqlSession.getMapper(ProductMapper.class).getImages(cart.getPseq());
+				cart.setUrl(images.get(0));
+				carts.add(cart);
+			}
+			return carts;	
+		}finally{
 			sqlSession.close();
 		}
-
 	}
-
-	// ÁÖ¹® ¹øÈ£º° ÃÑ °¹¼ö¸¦ °¡Á®¿À´Â ¸Ş¼Òµå (ÁÖ¹®¹øÈ£ group by) (ÁÖ¹®»óÅÂ Àû¿ë)
-	public List<Integer> SOseqCountList2(int sseq, int result) throws Exception {
+	
+	public void updateCustomerAddress(String email, String postcode, String address) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
-			return sqlSession.getMapper(OrderMapper.class).SOseqCountList2(sseq, result);
-		} finally {
+			sqlSession.getMapper(OrderMapper.class).updateAddress(postcode, address, email);
+			sqlSession.commit();
+		}finally{
 			sqlSession.close();
 		}
-
 	}
+	
+	//ì¢‹ì•„ìš” íŒë³„ ë²„íŠ¼ ë¹„í™œì„±í™”ì‹œ ì‚¬ìš©
+	public boolean checkLikeExist(String email, int pseq) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			Like like = sqlSession.getMapper(LikeMapper.class).checkLikeProduct(email, pseq);
+			if(like == null) {
+				return false; //falseëŠ” dbì— ê°’ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŒ ì±„ì›Œì§„ í•˜íŠ¸ 
+			}else {
+				return true; // trueëŠ” dbì— ê°’ ì¡´ì¬ ë¹„ì›Œì§„ í•˜íŠ¸
+			}
+		}finally {
+			sqlSession.close();
+		}
+	}
+	
+	//ì£¼ë¬¸/ë°°ì†¡ ì¡°íšŒ
+	public List<Order> selectOrderRecent(String email) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			List<Order> orders = new ArrayList<Order>();
+			for(Order order:sqlSession.getMapper(OrderMapper.class).selectRecentorder(email)) {
+				List<String> images =  sqlSession.getMapper(ProductMapper.class).getImages(order.getPseq());
+				order.setUrl(images.get(0));
+				orders.add(order);
+			}
+			return orders;
+		}finally {
+			sqlSession.close();
+		}
+		
+	}
+	
+	//ì£¼ë¬¸ ì·¨ì†Œí•˜ê¸°
+	public void deleteOrder(int odseq, int oseq, int payment, String email) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			
+			Order order = sqlSession.getMapper(OrderMapper.class).selectOrderDetailByOdseq(odseq);
+			
+			sqlSession.getMapper(OrderMapper.class).deleteOrderDetail(odseq);
+			sqlSession.getMapper(OrderMapper.class).updateAmount(oseq, payment);
+			//orders amountê°€ 0ì´ë©´ ì „ë¶€ ì·¨ì†Œí–ˆë‹¤ëŠ” ì˜ë¯¸ ì „ì²´ ì·¨ì†ŒëŠ” í¬ì¸íŠ¸ë¥¼ ëŒë ¤ì¤€ë‹¤.
+			if(sqlSession.getMapper(OrderMapper.class).selectCancelPoint() != null) {
+				int used_point = Integer.parseInt(sqlSession.getMapper(OrderMapper.class).selectCancelPoint());
+				sqlSession.getMapper(OrderMapper.class).reUpdatePoint(used_point, email);
+			}
+			//orders amount = 0ì´ë©´ ì‚­ì œí•˜ê¸°
+			sqlSession.getMapper(OrderMapper.class).deleteOrders();
+			
+			//ì·¨ì†Œí•œ ìƒí’ˆ ìˆ˜ëŸ‰ ë§Œí¼ ìˆ˜ëŸ‰ ì¶”ê°€í•´ì£¼ê¸°
+			sqlSession.getMapper(OrderMapper.class).updateProductQua(order.getPseq(), order.getQuantity());
+			sqlSession.commit();
+		}finally {
+			sqlSession.close();
+		}
+	}
+	
+	//êµ¬ë§¤ë‚´ì—­ ë³´ê¸°
+	public List<Order> selectOrderList(String email) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		
+		try {
+			
+			List<Order> orders = new ArrayList<Order>();
+			for(Order order:sqlSession.getMapper(OrderMapper.class).selectOrderList(email)) {
+				List<String> images =  sqlSession.getMapper(ProductMapper.class).getImages(order.getPseq());
+				order.setUrl(images.get(0));
+				orders.add(order);
+			}
+			return orders;
 
+		}finally {
+			sqlSession.close();
+		}
+	}
+	
+	//ì£¼ë¬¸ ì½”ë“œë¡œ ì£¼ë¬¸ ë‚´ì—­ ê°€ì§€ê³  ì˜¤ê¸°
+	public Order selectOrderView(int odseq) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		
+		try {
+			Order order = sqlSession.getMapper(OrderMapper.class).selectOrderView(odseq);
+			List<String> images =  sqlSession.getMapper(ProductMapper.class).getImages(order.getPseq());
+			order.setUrl(images.get(0));
+			
+			return order;
+
+		}finally {
+			sqlSession.close();
+		}
+	}
+	
+	//ë“±ê¸‰ë³„ë¡œ í¬ì¸íŠ¸ ì ë¦½í•˜ê¸°
+	public void UpdateCustomerPoint(String email, int point){
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		
+		try {
+			sqlSession.getMapper(OrderMapper.class).updatePoint(point, email);
+			sqlSession.commit();
+		}finally {
+			sqlSession.close();
+		}
+	}
+	
+	//==================== seller=============================
+	//sellerì—ì„œ customerê°€ ì£¼ë¬¸í•œ ìƒí’ˆì„ ê°€ì ¸ì˜¤ëŠ” ë©”ì†Œë“œ(ì£¼ë¬¸ë²ˆí˜¸ group by ì ìš© x=ë””í…Œì¼)
+	public List<Order> SOrderList(int sseq,int oseq) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).SOrderList(sseq,oseq);
+		}finally{
+			sqlSession.close();
+		}
+	}
+	
+	// ì£¼ë¬¸ë‚´ì—­ì— ê´€í•œ ì´í•©ê³„ 
+	public int SOrderListCount(int sseq,int oseq) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).SOrderListCount(sseq,oseq);
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+	
+	
+	
+	//ì£¼ë¬¸ ë²ˆí˜¸ë³„ ì´ í•©ì‚° ê¸ˆì•¡ì„ ê°€ì ¸ì˜¤ëŠ” ë©”ì†Œë“œ
+	public List<Integer> STotalPrice(int sseq) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).STotalPrice(sseq);
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+	
+	//ì£¼ë¬¸ ë²ˆí˜¸ë³„ ìƒí’ˆ ë‚´ì—­ì„ ê°€ì ¸ì˜¤ëŠ” ë©”ì†Œë“œ (ì£¼ë¬¸ë²ˆí˜¸ group by)
+	public List<Order> SOseqOrderList(int sseq) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).SOseqOrderList(sseq);
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+	
+	//ì£¼ë¬¸ ë²ˆí˜¸ë³„ ì´ ê°¯ìˆ˜ë¥¼ ê°€ì ¸ì˜¤ëŠ” ë©”ì†Œë“œ (ì£¼ë¬¸ë²ˆí˜¸ group by)
+	public List<Integer> SOseqCountList(int sseq) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).SOseqCountList(sseq);
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+	
+	//ì£¼ë¬¸ ë²ˆí˜¸ë³„ ì´ í•©ì‚° ê¸ˆì•¡ì„ ê°€ì ¸ì˜¤ëŠ” ë©”ì†Œë“œ (ì£¼ë¬¸ìƒíƒœ ì ìš©)
+	public List<Integer> STotalPrice2(int sseq,int result) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).STotalPrice2(sseq,result);
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+	
+	//ì£¼ë¬¸ ë²ˆí˜¸ë³„ ìƒí’ˆ ë‚´ì—­ì„ ê°€ì ¸ì˜¤ëŠ” ë©”ì†Œë“œ (ì£¼ë¬¸ë²ˆí˜¸ group by) (ì£¼ë¬¸ìƒíƒœ ì ìš©)
+	public List<Order> SOseqOrderList2(int sseq,int result) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).SOseqOrderList2(sseq,result);
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+	
+	//ì£¼ë¬¸ ë²ˆí˜¸ë³„ ì´ ê°¯ìˆ˜ë¥¼ ê°€ì ¸ì˜¤ëŠ” ë©”ì†Œë“œ (ì£¼ë¬¸ë²ˆí˜¸ group by) (ì£¼ë¬¸ìƒíƒœ ì ìš©)
+	public List<Integer> SOseqCountList2(int sseq,int result) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).SOseqCountList2(sseq,result);
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+	
+	//ë°°ì†¡ìƒíƒœ ë³€ê²½
+	public void SOrderResultUpdate(int sseq,int oseq, int result) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			sqlSession.getMapper(OrderMapper.class).SOrderResultUpdate(sseq, oseq, result);
+			sqlSession.commit();
+		}finally{
+			sqlSession.close();
+		}
+	}
+	
+	//==============================================================
+	public List<Order> WOrderList() throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			return	sqlSession.getMapper(OrderMapper.class).WAllOrderList();
+		}finally{
+			sqlSession.close();
+		}
+		
+	}
+		
 }

@@ -1,6 +1,8 @@
 package dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Seller {
 	private int sseq;
@@ -12,6 +14,31 @@ public class Seller {
 	private String address;
 	private char status;
 	private Date reg_date;
+	
+	
+	public String getZip_num() {
+		return zip_num;
+	}
+
+	public void setZip_num(String zip_num) {
+		this.zip_num = zip_num;
+	}
+	private List<SellerFarm> FramList=new ArrayList<SellerFarm>();
+
+
+	public List<SellerFarm> getFramList() {
+		return FramList;
+	}
+
+	public void setFramList(List<SellerFarm> framList) {
+		FramList = framList;
+	}
+
+	public void addFram(SellerFarm image) {
+		FramList.add(image);
+	}
+
+	
 	public int getSseq() {
 		return sseq;
 	}
@@ -42,12 +69,7 @@ public class Seller {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public String getzip_num() {
-		return zip_num;
-	}
-	public void setzip_num(String zip_num) {
-		this.zip_num = zip_num;
-	}
+
 	public String getAddress() {
 		return address;
 	}

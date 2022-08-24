@@ -1,6 +1,7 @@
 package dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class Product {
 	private int pseq;
@@ -15,7 +16,15 @@ public class Product {
 	private int sseq;
 	private Date reg_date;
 	private String url;
-	private int quantity; //ÃÑ ¼ö·®
+	private int quantity; //ì´ ìˆ˜ëŸ‰
+	private String like;
+
+	public String getLike() {
+		return like;
+	}
+	public void setLike(String like) {
+		this.like = like;
+	}
 	public int getQuantity() {
 		return quantity;
 	}

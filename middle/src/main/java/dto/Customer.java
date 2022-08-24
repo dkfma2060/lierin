@@ -14,6 +14,7 @@ public class Customer {
 	private String grade;
 	private Date reg_date;
 	private int point;
+	
 	public int getPoint() {
 		return point;
 	}

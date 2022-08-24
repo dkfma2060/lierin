@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import dto.Customer;
 import mapper.CustomerMapper;
-
 
 
 public class CustomerDaoImpl implements CustomerDao{
@@ -43,7 +43,7 @@ public class CustomerDaoImpl implements CustomerDao{
 			sqlSession.close();
 		}
 	}
-
+	
 	@Override
 	public List<Customer> selectList() throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
@@ -74,6 +74,30 @@ public class CustomerDaoImpl implements CustomerDao{
 			sqlSession.close();
 		}
 	}
+	
+	@Override
+	public void CustomerJoin(Customer customer) throws Exception {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			sqlSession.getMapper(CustomerMapper.class).insertCustomer(customer);
+			sqlSession.commit();
+		}finally {
+			sqlSession.close();
+		}
+		
+	}
+	
+	@Override
+	public void custoemrUpdate(Customer customer) throws Exception {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			sqlSession.getMapper(CustomerMapper.class).updateCustomer(customer);
+			sqlSession.commit();
+		}finally {
+			sqlSession.close();
+		}
+	}
+
 
 	@Override
 	public Customer selectOne(String email) throws Exception {
@@ -90,7 +114,7 @@ public class CustomerDaoImpl implements CustomerDao{
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			int count = sqlSession.getMapper(CustomerMapper.class).getUpdate(customer);
-			sqlSession.commit(); // transaction Ã³¸® =>save point
+			sqlSession.commit(); // transaction ì²˜ë¦¬ =>save point
 			return count;
 		} catch (Exception e) {
 			sqlSession.rollback(); 									
@@ -99,5 +123,18 @@ public class CustomerDaoImpl implements CustomerDao{
 		}
 		return -1;
 	}
+	
+	public void deleteCustomer(Customer customer) throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			sqlSession.getMapper(CustomerMapper.class).WithdrawalCustomer(customer.getEmail());
+			sqlSession.commit(); 
+		} catch (Exception e) {
+			sqlSession.rollback(); 									
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 	
 }

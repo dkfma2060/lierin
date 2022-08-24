@@ -16,17 +16,17 @@ public interface WorkerDao {
 	int update(Worker worker)throws Exception;
 	Worker idCheck(String id) throws Exception;
 	int insert(Wnotice notice) throws Exception;
-	//°Ô½ÃÆÇ
+	//ê²Œì‹œíŒ
 	List<Wnotice> noticeList() throws Exception;
 	List<Wnotice> qnaList() throws Exception;
 	int update(Wnotice notice)throws Exception;	
 	Wnotice select(int wseq) throws Exception;
 	void delete(int notice)throws Exception;
-	// customer ¸ÅÃâ°ü¸®
+	//customer ë§¤ì¶œê´€ë¦¬
 	List<Sales> selectSales() throws Exception;
 	List<Integer> sales() throws Exception;
 	List<Integer> dateSales() throws Exception;
-	// seller ¼ö¼ö·á °ü¸®
+	// seller ìˆ˜ìˆ˜ë£Œ ê´€ë¦¬
 	List<SellerSales> Seller1Sales() throws Exception;
 	List<SellerSales> Seller2Sales() throws Exception;
 	List<SellerSales> Seller3Sales() throws Exception;
@@ -43,4 +43,7 @@ public interface WorkerDao {
 	int recommend(int pseq) throws Exception;
 	List<Integer> recommendList() throws Exception;
 	int deleteRecommend(int pseq) throws Exception;
+	//product saleì—¬ë¶€ ë³€ê²½
+	int discount(int pseq) throws Exception;
+	int notDiscount(int pseq) throws Exception;
 }

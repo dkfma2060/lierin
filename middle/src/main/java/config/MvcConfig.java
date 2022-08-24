@@ -9,13 +9,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer{
-	//ÇÚµé·¯¸ÊÇÎ - ÄÁÆ®·Ñ·¯ Ã£´Â ¿ªÇÒ , ÇÚµé·Î ¸ÊÇÎÀÌ µ¿ÀÛÇÒ ¼ö ÀÖµµ·Ï ÇÑ´Ù.
+	//í•¸ë“¤ëŸ¬ë§µí•‘ - ì»¨íŠ¸ë¡¤ëŸ¬ ì°¾ëŠ” ì—­í•  , í•¸ë“¤ë¡œ ë§µí•‘ì´ ë™ì‘í•  ìˆ˜ ìˆë„ë¡ í•œë‹¤.
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
 	}
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
-		registry.jsp().prefix("/WEB-INF/view/"); // ~form.jsp¿¡¼­ µÚ¿¡ .jsp¸¦ ºÙ¿©ÁöÁÖÁö ¾Ê¾Æµµ µÈ´Ù. ¿Ö? .jsp() ´öºĞ¿¡, ¾Õ¿¡ µğ·ºÅä¸®µµ ¾ÈºÙ¿©Áàµµ µÈ´Ù. prefix() ´öºĞ¿¡
+		registry.jsp().prefix("/WEB-INF/view/"); // ~form.jspì—ì„œ ë’¤ì— .jspë¥¼ ë¶™ì—¬ì§€ì£¼ì§€ ì•Šì•„ë„ ëœë‹¤. ì™œ? .jsp() ë•ë¶„ì—, ì•ì— ë””ë ‰í† ë¦¬ë„ ì•ˆë¶™ì—¬ì¤˜ë„ ëœë‹¤. prefix() ë•ë¶„ì—
 	}
 }
